@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFE8EE">
+<title>🎀 Made for you — Ritika's World</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg1: #FFF8F5; --bg2: #FFE8EE;
+    --accent1: #FFB5C8; --accent2: #C9B8FF; --accent3: #FFD6B0;
+    --card-bg: rgba(255,255,255,0.75);
+    --text-main: #4A3040; --text-soft: #8A6070;
+    --rain-color: rgba(160,180,220,0.35);
+    --ease-pop: cubic-bezier(0.34,1.56,0.64,1);
+  }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 100%);
+    min-height: 100vh; min-height: -webkit-fill-available;
+    color: var(--text-main); overflow-x: hidden;
+    transition: background 0.8s ease; position: relative;
+  }
+
+  /* BLOSSOMS */
+  .blossoms-container { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .blossom { position: absolute; top: -30px; font-size: 14px; opacity: 0.7; animation: fall linear infinite; user-select: none; pointer-events: auto; cursor: default; }
+  @keyframes fall {
+    0%   { transform: translateY(-30px) rotate(0deg) translateX(0px); opacity: 0.7; }
+    25%  { transform: translateY(25vh) rotate(90deg) translateX(15px); }
+    50%  { transform: translateY(50vh) rotate(180deg) translateX(-10px); }
+    75%  { transform: translateY(75vh) rotate(270deg) translateX(12px); }
+    100% { transform: translateY(110vh) rotate(360deg) translateX(-5px); opacity: 0.2; }
+  }
+
+  /* RAIN */
+  .rain-container { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; display: none; }
+  .rain-container.active { display: block; }
+  .raindrop { position: absolute; width: 1.5px; background: linear-gradient(to bottom, transparent, var(--rain-color)); animation: rainFall linear infinite; border-radius: 2px; }
+  @keyframes rainFall {
+    0% { transform: translateY(-60px); opacity: 0; }
+    10% { opacity: 1; } 90% { opacity: 0.7; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  /* CONFETTI */
+  .confetti-piece { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9998; border-radius: 2px; animation: confettiFall 3s ease-in forwards; }
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* INTRO */
+  #intro { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(160deg, #FFF8F5 0%, #FFE8EE 60%, #FFDCE8 100%); display: flex; align-items: center; justify-content: center; transition: opacity 0.6s ease; padding: 24px; text-align: center; }
+  #intro.fading { opacity: 0; pointer-events: none; }
+  .intro-orb { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(255,181,200,0.55) 0%, rgba(214,208,255,0.35) 40%, transparent 70%); filter: blur(12px); animation: breatheOrb 4s ease-in-out infinite; opacity: 0; }
+  @keyframes breatheOrb { 0%,100%{transform:scale(1);opacity:.85} 50%{transform:scale(1.08);opacity:1} }
+  .intro-orb.show { opacity: 1; transition: opacity 0.6s ease; }
+  .intro-inner { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 340px; }
+  .intro-title { font-size: 32px; font-weight: 900; color: #4A3040; letter-spacing: -0.5px; min-height: 44px; line-height: 1.3; }
+  .intro-title .intro-letter { display: inline-block; opacity: 0; transform: translateY(8px); animation: letterIn 0.35s var(--ease-pop) forwards; }
+  @keyframes letterIn { to { opacity: 1; transform: translateY(0); } }
+  .intro-sub { font-size: 14px; font-weight: 700; color: #E8A0B8; margin-top: 14px; opacity: 0; transition: opacity 0.6s ease; }
+  .intro-sub.show { opacity: 1; }
+  .intro-btn-wrap { margin-top: 28px; width: 100%; max-width: 220px; opacity: 0; transform: scale(0.9); transition: opacity 0.5s ease, transform 0.5s var(--ease-pop); }
+  .intro-btn-wrap.show { opacity: 1; transform: scale(1); }
+  .intro-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 20px; opacity: 0; animation: hintPulse 2s ease-in-out infinite 2s; }
+  @keyframes hintPulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+
+  /* APP */
+  #app { position: relative; z-index: 10; max-width: 430px; margin: 0 auto; min-height: 100vh; min-height: -webkit-fill-available; padding: 0 16px 40px; display: flex; flex-direction: column; box-shadow: 0 0 60px rgba(255,181,200,0.15); }
+
+  /* ENVELOPE PIN */
+  #envelope-pin { position: fixed; top: 18px; right: 18px; z-index: 200; width: 46px; height: 46px; background: linear-gradient(135deg, #FFD6E8, #FFE0C0); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 16px rgba(200,150,170,0.35); cursor: pointer; border: 2px solid rgba(255,255,255,0.9); animation: pinBob 3s ease-in-out infinite; }
+  @keyframes pinBob { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-4px) rotate(-4deg)} }
+  #envelope-pin:active { transform: scale(0.9); }
+
+  /* SCREENS */
+  .screen { display: none; flex-direction: column; min-height: 100vh; min-height: -webkit-fill-available; padding-top: 70px; animation: fadeSlideIn 0.45s ease; }
+  .screen.active { display: flex; }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .back-btn { position: absolute; top: 18px; left: 18px; background: rgba(255,255,255,0.85); border: none; border-radius: 50px; padding: 8px 18px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-soft); cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(200,150,170,0.2); transition: transform 0.2s; }
+  .back-btn:active { transform: scale(0.95); }
+
+  /* HOME */
+  #home-greeting { position: relative; text-align: center; margin-top: 20px; padding: 34px 20px; background: var(--card-bg); border-radius: 32px; box-shadow: 0 8px 32px rgba(200,150,170,0.15); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px solid rgba(255,255,255,0.6); animation: breathe 4s ease-in-out infinite; overflow: hidden; }
+  #home-greeting::before { content: ''; position: absolute; inset: 0; border-radius: 32px; padding: 2px; background: linear-gradient(135deg, #FFB5C8, #D6D0FF, #FFD6B0, #FFB5C8); background-size: 300% 300%; -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0.6; pointer-events: none; animation: borderFlow 6s ease-in-out infinite; }
+  @keyframes borderFlow { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  @keyframes breathe { 0%,100%{box-shadow:0 8px 32px rgba(200,150,170,.15)} 50%{box-shadow:0 12px 48px rgba(200,150,170,.28)} }
+  #home-greeting h1 { font-size: 24px; font-weight: 800; line-height: 1.6; color: var(--text-main); position: relative; z-index: 2; display: inline; }
+  .greet-cursor { display: inline-block; color: var(--accent1); font-weight: 900; animation: blink 1s step-end infinite; opacity: 0; margin-left: 2px; transition: opacity 0.5s ease; }
+  .greet-cursor.show { opacity: 1; }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+  .greet-float { position: absolute; font-size: 16px; opacity: 0.7; pointer-events: none; z-index: 1; }
+  .greet-float.f1 { top: 12px; left: 18px; animation: floatEmoji 3.5s ease-in-out infinite; }
+  .greet-float.f2 { top: 10px; left: 50%; margin-left: -8px; animation: floatEmoji 4.2s ease-in-out infinite 0.5s; }
+  .greet-float.f3 { top: 12px; right: 18px; animation: floatEmoji 3.8s ease-in-out infinite 1s; }
+  @keyframes floatEmoji { 0%,100%{transform:translateY(0);opacity:.6} 50%{transform:translateY(-6px);opacity:1} }
+
+  .home-title { text-align: center; padding-top: 8px; font-size: 15px; font-weight: 900; color: var(--text-soft); letter-spacing: 1px; animation: titleShimmer 3s ease-in-out infinite; }
+  @keyframes titleShimmer { 0%,100%{opacity:.85} 50%{opacity:1} }
+
+  .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+  .zone-card { position: relative; background: var(--card-bg); border-radius: 24px; padding: 22px 14px 18px; text-align: center; cursor: pointer; box-shadow: 0 6px 20px rgba(180,140,170,0.10), inset 0 1px 0 rgba(255,255,255,0.8); transition: transform 0.25s var(--ease-pop), box-shadow 0.25s ease; display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 165px; border: 2px solid transparent; overflow: hidden; }
+  .zone-card::after { content: ''; position: absolute; inset: 0; border-radius: 22px; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.5), transparent 60%); pointer-events: none; }
+  .zone-card:active { transform: scale(0.96); }
+  .zone-card .zone-svg { width: 70px; height: 70px; margin-bottom: 4px; transition: transform 0.3s var(--ease-pop); position: relative; z-index: 2; }
+  .zone-card:active .zone-svg { transform: scale(1.1) rotate(-3deg); }
+  .zone-card .label { font-size: 15px; font-weight: 900; color: var(--text-main); line-height: 1.2; position: relative; z-index: 2; }
+  .zone-card .sub { font-size: 11px; font-weight: 700; color: var(--text-soft); opacity: 0.85; line-height: 1.3; position: relative; z-index: 2; }
+
+  .card-bday { background: linear-gradient(135deg, #FFE0EC 0%, #FFD6F0 100%); border-color: #FFB5C8; }
+  .card-mood { background: linear-gradient(135deg, #E0EEFF 0%, #D6D0FF 100%); border-color: #C9B8FF; }
+  .card-comp { background: linear-gradient(135deg, #FFF8E0 0%, #FFE8A0 100%); border-color: #FFD060; }
+  .card-moment { background: linear-gradient(135deg, #E8FFE8 0%, #D0F0E0 100%); border-color: #B5E8C8; }
+  .card-notes { background: linear-gradient(135deg, #FFF5E0 0%, #FFE8D0 100%); border-color: #FFCC99; }
+  .card-surp { background: linear-gradient(135deg, #F0E8FF 0%, #E0D0FF 100%); border-color: #C8A8FF; }
+
+  .bday-glow { animation: bdayPulse 2s ease-in-out infinite; }
+  @keyframes bdayPulse { 0%,100%{box-shadow:0 6px 24px rgba(255,131,170,0.25),0 0 0 0 rgba(255,131,170,0.4)} 50%{box-shadow:0 6px 40px rgba(255,131,170,0.5),0 0 0 10px rgba(255,131,170,0)} }
+
+  /* CONTENT CARDS */
+  .content-card { background: var(--card-bg); border-radius: 32px; padding: 28px 22px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(200,150,170,0.13); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px solid rgba(255,255,255,0.6); animation: cardIn 0.5s var(--ease-pop); }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(12px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .big-text { font-size: 18px; font-weight: 700; line-height: 1.7; color: var(--text-main); }
+  .soft-text { font-size: 15px; font-weight: 600; line-height: 1.9; color: var(--text-soft); }
+  .center { text-align: center; }
+
+  /* BUTTONS */
+  .btn { display: block; width: 100%; padding: 16px; border: none; border-radius: 50px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; cursor: pointer; transition: transform 0.18s var(--ease-pop); margin-top: 12px; position: relative; overflow: hidden; }
+  .btn:active { transform: scale(0.96); }
+  .btn-primary { background: linear-gradient(135deg, #FFB5C8, #C9B8FF); background-size: 200% 200%; color: white; box-shadow: 0 6px 20px rgba(200,150,200,0.35); animation: btnFlow 5s ease-in-out infinite; }
+  @keyframes btnFlow { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+  .btn-soft { background: rgba(255,255,255,0.8); color: var(--text-soft); box-shadow: 0 4px 14px rgba(200,150,170,0.15); border: 1.5px solid rgba(255,181,200,0.4); }
+
+  /* MOOD PETALS — VISIBLE */
+  .mood-flower { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 10px 0; }
+  .mood-row { display: flex; gap: 12px; justify-content: center; width: 100%; }
+  .mood-petal { background: #FFFFFF; border-radius: 20px; padding: 16px 14px; text-align: center; cursor: pointer; box-shadow: 0 6px 18px rgba(180,140,180,0.18), inset 0 1px 0 rgba(255,255,255,0.9); border: 2px solid rgba(200,150,170,0.4); transition: transform 0.25s var(--ease-pop), box-shadow 0.2s, border-color 0.2s, background 0.2s; min-width: 90px; flex: 1; position: relative; }
+  .mood-petal:active { transform: scale(0.94); }
+  .mood-petal.selected { border-color: #FF8FB0; background: linear-gradient(135deg, #FFEAF3, #FFD9E8); box-shadow: 0 8px 28px rgba(255,143,176,0.45), 0 0 0 3px rgba(255,181,200,0.3); transform: scale(1.04); animation: petalPop 0.5s var(--ease-pop); }
+  @keyframes petalPop { 0%{transform:scale(1)} 50%{transform:scale(1.12)} 100%{transform:scale(1.04)} }
+  .mood-petal .m-icon { font-size: 30px; display: inline-block; transition: transform 0.3s var(--ease-pop); }
+  .mood-petal:active .m-icon { transform: scale(1.2) rotate(-8deg); }
+  .mood-petal .m-label { font-size: 12px; font-weight: 800; color: var(--text-main); margin-top: 6px; }
+
+  #mood-response-card { display: none; animation: fadeSlideIn 0.4s ease; }
+  .mood-line { font-size: 18px; font-weight: 700; line-height: 1.7; color: var(--text-main); text-align: center; }
+
+  .rant-textarea, .envelope-textarea { width: 100%; background: rgba(255,255,255,0.9); border: 2px solid rgba(200,170,200,0.35); border-radius: 20px; padding: 16px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-main); resize: none; outline: none; line-height: 1.7; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; min-height: 130px; }
+  .rant-textarea:focus, .envelope-textarea:focus { border-color: var(--accent1); background: #fff; box-shadow: 0 0 0 4px rgba(255,181,200,0.2); }
+
+  .float-word { position: fixed; pointer-events: none; z-index: 9998; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-soft); animation: floatAway 2.5s ease-out forwards; }
+  @keyframes floatAway { 0%{opacity:1;transform:translateY(0) scale(1) rotate(0)} 100%{opacity:0;transform:translateY(-200px) scale(0.3) rotate(15deg)} }
+
+  /* BIRTHDAY */
+  #bday-screens .bday-screen { display: none; }
+  #bday-screens .bday-screen.active { display: block; animation: fadeSlideIn 0.4s ease; }
+  .progress-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(200,150,170,0.3); transition: all 0.3s var(--ease-pop); }
+  .dot.active { background: var(--accent1); transform: scale(1.3); box-shadow: 0 0 8px rgba(255,181,200,0.6); }
+
+  /* COMPLIMENT */
+  .compliment-card { text-align: center; padding: 40px 24px; position: relative; }
+  .compliment-text { font-size: 19px; font-weight: 700; line-height: 1.8; color: var(--text-main); animation: paperReveal 0.8s var(--ease-pop); }
+  @keyframes paperReveal { 0%{opacity:0;transform:translateY(10px) scale(0.98)} 100%{opacity:1;transform:translateY(0) scale(1)} }
+  .compliment-date { font-size: 12px; font-weight: 700; color: var(--text-soft); margin-top: 20px; opacity: 0.7; letter-spacing: 0.5px; }
+  .compliment-footer { font-size: 13px; font-weight: 700; color: var(--text-soft); margin-top: 14px; line-height: 1.7; }
+  .compliment-sign { font-size: 12px; font-weight: 700; color: var(--text-soft); opacity: 0.75; margin-top: 6px; }
+
+  /* MOMENT VIDEO */
+  #video-screen { position: fixed; inset: 0; z-index: 500; background: linear-gradient(160deg, #FFF0F5 0%, #F0E8FF 50%, #FFE8F0 100%); display: none; align-items: center; justify-content: center; overflow: hidden; padding: 30px; text-align: center; }
+  #video-screen.active { display: flex; }
+  .video-phase { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+  .video-phase.active { opacity: 1; pointer-events: auto; }
+  .v-small { font-size: 14px; font-weight: 700; color: var(--text-soft); letter-spacing: 3px; text-transform: lowercase; margin-bottom: 10px; }
+  .v-big { font-size: 44px; font-weight: 900; color: var(--text-main); letter-spacing: -0.5px; margin-bottom: 8px; }
+  .v-emoji { font-size: 60px; margin-top: 20px; animation: floatEmoji 3s ease-in-out infinite; }
+  .v-typed { font-size: 32px; font-weight: 900; color: var(--text-main); line-height: 1.4; }
+  .v-typed .vl { display: inline-block; opacity: 0; transform: translateY(10px); animation: vLetterPop 0.4s var(--ease-pop) forwards; }
+  @keyframes vLetterPop { to { opacity: 1; transform: translateY(0); } }
+  .v-line { font-size: 18px; font-weight: 700; color: var(--text-main); line-height: 1.8; margin: 10px 0; opacity: 0; animation: softFadeIn 1s ease forwards; }
+  @keyframes softFadeIn { to { opacity: 1; } }
+  .v-divider { width: 40px; height: 2px; background: rgba(200,150,170,0.4); border-radius: 2px; margin: 20px auto; }
+  .v-sign { font-size: 16px; font-weight: 700; color: var(--text-soft); margin-top: 24px; }
+  .v-close { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.85); border: none; border-radius: 50px; padding: 8px 18px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; color: var(--text-soft); cursor: pointer; z-index: 10; }
+
+  /* NOTES */
+  .note-card { text-align: center; padding: 36px 24px; position: relative; }
+  .note-text { font-size: 17px; font-weight: 700; line-height: 1.9; color: var(--text-main); animation: paperReveal 0.9s var(--ease-pop); font-style: italic; }
+  .note-sign { font-size: 12px; font-weight: 800; color: var(--text-soft); margin-top: 20px; text-align: right; padding-right: 4px; letter-spacing: 0.5px; }
+  .note-seal { position: absolute; top: 14px; right: 16px; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #FFD6E8, #FF8FB0); box-shadow: 0 2px 6px rgba(200,150,170,0.4); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .note-counter { font-size: 12px; font-weight: 800; color: var(--text-soft); opacity: 0.7; text-align: center; margin-top: 14px; letter-spacing: 0.5px; }
+  .all-notes-list { max-height: 60vh; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-right: 4px; }
+  .saved-note { background: rgba(255,255,255,0.7); border-radius: 18px; padding: 16px 18px; margin-bottom: 10px; font-size: 14px; font-weight: 600; line-height: 1.7; color: var(--text-main); font-style: italic; border: 1.5px solid rgba(255,204,153,0.5); }
+
+  /* SURPRISES */
+  .gift-wrap { text-align: center; padding: 40px 20px; }
+  .gift-box { display: inline-block; cursor: pointer; font-size: 80px; transition: transform 0.3s var(--ease-pop); animation: giftFloat 3s ease-in-out infinite; user-select: none; }
+  @keyframes giftFloat { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-8px) rotate(2deg)} }
+  .gift-box:active { transform: scale(0.9); }
+  .gift-box.wiggle { animation: giftWiggle 0.5s ease; }
+  @keyframes giftWiggle { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-12deg) scale(1.1)} 40%{transform:rotate(12deg) scale(1.1)} 60%{transform:rotate(-8deg) scale(1.05)} 80%{transform:rotate(8deg) scale(1.05)} }
+  .surprise-card { text-align: center; padding: 30px 22px; animation: paperReveal 0.7s var(--ease-pop); }
+  .surprise-text { font-size: 16px; font-weight: 700; line-height: 1.9; color: var(--text-main); }
+  .surprise-hint { font-size: 12px; font-weight: 700; color: var(--text-soft); margin-top: 18px; opacity: 0.75; }
+
+  /* ENVELOPE SCREEN */
+  .env-header-title { font-size: 22px; font-weight: 900; color: var(--text-main); margin-bottom: 6px; }
+  .env-header-sub { font-size: 14px; font-weight: 600; color: var(--text-soft); line-height: 1.7; }
+  #sent-feedback { display: none; text-align: center; font-size: 20px; font-weight: 800; color: var(--text-main); padding: 20px; animation: fadeSlideIn 0.4s ease; }
+
+  /* MOOD PALETTES */
+  body.mood-happy { --bg1:#FFFBF0; --bg2:#FFE8C0; --accent1:#FFD060; --accent2:#FFB347; --card-bg:rgba(255,255,240,0.8); --rain-color:transparent; }
+  body.mood-low { --bg1:#F5F0FF; --bg2:#DDD6FF; --accent1:#A898E0; --accent2:#8090C0; --card-bg:rgba(248,246,255,0.8); }
+  body.mood-frustrated { --bg1:#FFF0EE; --bg2:#FFD6CC; --accent1:#FF8070; --accent2:#FFB0A0; --card-bg:rgba(255,248,246,0.8); }
+  body.mood-tired { --bg1:#F0FBF6; --bg2:#C8EAD8; --accent1:#7DBFA0; --accent2:#5A9E80; --card-bg:rgba(245,255,250,0.8); }
+  body.mood-numb { --bg1:#F5F2F8; --bg2:#DDD8E8; --accent1:#B0A8C8; --accent2:#9890B0; --card-bg:rgba(248,246,252,0.8); }
+
+  /* TOASTS */
+  #easter-egg-toast, #mood-memory-toast {
+    position: fixed; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.96); border-radius: 20px; padding: 15px 24px; font-size: 13px; font-weight: 700; color: var(--text-main); box-shadow: 0 8px 32px rgba(200,150,170,0.3); z-index: 9999; text-align: center; max-width: 290px; border: 1.5px solid rgba(255,181,200,0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  #easter-egg-toast { bottom: 100px; display: none; animation: fadeSlideIn 0.3s ease; }
+  #mood-memory-toast { bottom: 160px; display: none; cursor: pointer; animation: memoryIn 0.6s var(--ease-pop); }
+  @keyframes memoryIn { from { opacity:0; transform: translateX(-50%) translateY(20px) scale(0.9);} to { opacity:1; transform: translateX(-50%) translateY(0) scale(1);} }
+
+  #late-night-whisper { position: fixed; bottom: 30px; left: 0; right: 0; text-align: center; font-size: 13px; font-weight: 700; color: rgba(180,140,160,0.7); z-index: 50; pointer-events: none; display: none; animation: fadeSlideIn 1s ease; }
+
+  .balloon { position: fixed; font-size: 40px; animation: balloonFloat 4s ease-in-out infinite; pointer-events: none; z-index: 9990; }
+  @keyframes balloonFloat { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-20px) rotate(5deg)} }
+
+  .section-title { font-size: 22px; font-weight: 900; color: var(--text-main); margin-bottom: 6px; }
+  .scroll-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  .mt8 { margin-top: 8px; } .mt12 { margin-top: 12px; } .mt16 { margin-top: 16px; } .mt24 { margin-top: 24px; }
+  .mb8 { margin-bottom: 8px; } .mb16 { margin-bottom: 16px; }
+  .emoji-big { font-size: 48px; display: block; text-align: center; margin-bottom: 8px; }
+  .divider { height: 1px; background: rgba(200,170,200,0.2); margin: 16px 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="blossoms-container" id="intro-blossoms"></div>
+  <div class="intro-orb" id="intro-orb"></div>
+  <div class="intro-inner">
+    <div class="intro-title" id="intro-title"></div>
+    <div class="intro-sub" id="intro-sub">something i built, just for you 🌸</div>
+    <div class="intro-btn-wrap" id="intro-btn-wrap">
+      <button class="btn btn-primary" onclick="closeIntro()">open your world 🌸</button>
+    </div>
+  </div>
+  <div class="intro-hint">🌸</div>
+</div>
+
+<div class="blossoms-container" id="blossoms"></div>
+<div class="rain-container" id="rain-container"></div>
+
+<div id="envelope-pin" onclick="showScreen('envelope')">✉️</div>
+<div id="late-night-whisper">hey. go sleep. I mean it 😂</div>
+<div id="easter-egg-toast">okay you found it 😂 hi. hope you're smiling right now. — S 🫶</div>
+<div id="mood-memory-toast" onclick="this.style.display='none'"></div>
+<div id="balloons-container"></div>
+
+<!-- VIDEO FULLSCREEN -->
+<div id="video-screen">
+  <button class="v-close" onclick="closeVideo()">← back</button>
+
+  <!-- Video 1 phases -->
+  <div class="video-phase" id="v1-p1">
+    <div class="v-small">from</div>
+    <div class="v-big">Sivaram</div>
+    <div class="v-emoji">🫶</div>
+  </div>
+  <div class="video-phase" id="v1-p2">
+    <div class="v-small">to</div>
+    <div class="v-big">Ritika</div>
+    <div class="v-emoji">🎀</div>
+  </div>
+  <div class="video-phase" id="v1-p3">
+    <div class="v-small">wishing you the most beautiful</div>
+    <div class="v-typed" id="v1-typed"></div>
+  </div>
+  <div class="video-phase" id="v1-p4">
+    <div class="v-emoji">🎂</div>
+    <div class="v-big">Happy Birthday Ritika</div>
+    <div class="v-divider"></div>
+    <div class="v-line">Have the kind of year that matches how good a person you are 🌸</div>
+    <div class="v-sign">— Sivaram 🫶🎀</div>
+  </div>
+
+  <!-- Video 2 phases -->
+  <div class="video-phase" id="v2-p1">
+    <div class="v-line" style="font-size: 22px; font-weight: 800;">hey.</div>
+  </div>
+  <div class="video-phase" id="v2-p2">
+    <div class="v-line">I don't say this enough.</div>
+    <div class="v-line" style="margin-top: 30px;">But I'm really glad I ended up in your DMs that day.</div>
+  </div>
+  <div class="video-phase" id="v2-p3">
+    <div class="v-line">You didn't just listen.</div>
+    <div class="v-line" style="margin-top: 20px;">You made things feel okay again.</div>
+    <div class="v-line" style="margin-top: 20px;">Without even trying.</div>
+  </div>
+  <div class="video-phase" id="v2-p4">
+    <div class="v-line">Thank you.</div>
+    <div class="v-line" style="margin-top: 14px;">For being exactly who you are.</div>
+    <div class="v-divider"></div>
+    <div class="v-big" style="font-size: 32px;">Happy Birthday 🌸</div>
+    <div class="v-sign">— Sivaram</div>
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="home-title">✨ Ritika's World ✨</div>
+    <div id="home-greeting">
+      <span class="greet-float f1">🌸</span>
+      <span class="greet-float f2">✨</span>
+      <span class="greet-float f3">🎀</span>
+      <h1 id="greeting-text">Good morning 🌸</h1><span class="greet-cursor" id="greet-cursor">|</span>
+    </div>
+
+    <div class="grid-2x2 mt16">
+      <!-- Birthday -->
+      <div class="zone-card card-bday" id="bday-card" onclick="showScreen('birthday')">
+        <svg class="zone-svg" viewBox="0 0 100 100" fill="none" stroke="#C77A9A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="50" cy="82" rx="34" ry="5" fill="#FFF" stroke="#C77A9A"/>
+          <path d="M22 82 L22 62 Q22 58 26 58 L74 58 Q78 58 78 62 L78 82 Z" fill="#FFE0EC"/>
+          <path d="M22 62 Q28 68 34 62 Q40 68 46 62 Q52 68 58 62 Q64 68 70 62 Q76 68 78 62" fill="#FFF" stroke="#C77A9A"/>
+          <path d="M30 58 L30 44 Q30 40 34 40 L66 40 Q70 40 70 44 L70 58 Z" fill="#FFD6F0"/>
+          <path d="M30 44 Q35 50 40 44 Q45 50 50 44 Q55 50 60 44 Q65 50 70 44" fill="#FFF" stroke="#C77A9A"/>
+          <rect x="38" y="26" width="3.5" height="14" rx="1" fill="#FFB5C8" stroke="#C77A9A"/>
+          <rect x="48" y="22" width="3.5" height="18" rx="1" fill="#C9B8FF" stroke="#8A7AC8"/>
+          <rect x="58" y="26" width="3.5" height="14" rx="1" fill="#FFD6B0" stroke="#C89A5A"/>
+          <path d="M39.75 26 Q37 22 39.75 20 Q42.5 22 39.75 26 Z" fill="#FFD060" stroke="#E8A040"/>
+          <path d="M49.75 22 Q47 18 49.75 16 Q52.5 18 49.75 22 Z" fill="#FFD060" stroke="#E8A040"/>
+          <path d="M59.75 26 Q57 22 59.75 20 Q62.5 22 59.75 26 Z" fill="#FFD060" stroke="#E8A040"/>
+          <path d="M14 30 l1.5 3 l3 1.5 l-3 1.5 l-1.5 3 l-1.5 -3 l-3 -1.5 l3 -1.5 z" fill="#FFE0A0" stroke="#E8A040" stroke-width="1"/>
+          <path d="M86 26 l1.2 2.5 l2.5 1.2 l-2.5 1.2 l-1.2 2.5 l-1.2 -2.5 l-2.5 -1.2 l2.5 -1.2 z" fill="#FFE0A0" stroke="#E8A040" stroke-width="1"/>
+        </svg>
+        <div class="label">Birthday Surprise</div>
+        <div class="sub">something special 🎂</div>
+      </div>
+
+      <!-- Mood -->
+      <div class="zone-card card-mood" onclick="showScreen('mood')">
+        <svg class="zone-svg" viewBox="0 0 100 100" fill="none" stroke="#8A7AC8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M50 82 C 20 62, 14 40, 30 30 C 40 24, 48 32, 50 40 C 52 32, 60 24, 70 30 C 86 40, 80 62, 50 82 Z" fill="#D6D0FF"/>
+          <circle cx="40" cy="48" r="2.2" fill="#4A3040" stroke="none"/>
+          <circle cx="60" cy="48" r="2.2" fill="#4A3040" stroke="none"/>
+          <path d="M44 58 Q50 63 56 58" stroke="#4A3040"/>
+          <ellipse cx="34" cy="55" rx="3" ry="2" fill="#FFB5C8" opacity="0.7" stroke="none"/>
+          <ellipse cx="66" cy="55" rx="3" ry="2" fill="#FFB5C8" opacity="0.7" stroke="none"/>
+          <path d="M18 30 l1.2 2.5 l2.5 1.2 l-2.5 1.2 l-1.2 2.5 l-1.2 -2.5 l-2.5 -1.2 l2.5 -1.2 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+          <path d="M82 22 l1.2 2.5 l2.5 1.2 l-2.5 1.2 l-1.2 2.5 l-1.2 -2.5 l-2.5 -1.2 l2.5 -1.2 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+        </svg>
+        <div class="label">How Are You Feeling?</div>
+        <div class="sub">no filter needed 💙</div>
+      </div>
+
+      <!-- Compliment -->
+      <div class="zone-card card-comp" onclick="showScreen('compliment')">
+        <svg class="zone-svg" viewBox="0 0 100 100" fill="none" stroke="#C89A5A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="50" cy="52" r="22" fill="#FFF8E0" stroke="#C89A5A"/>
+          <circle cx="42" cy="48" r="2" fill="#4A3040" stroke="none"/>
+          <circle cx="58" cy="48" r="2" fill="#4A3040" stroke="none"/>
+          <path d="M44 58 Q50 63 56 58" stroke="#4A3040"/>
+          <ellipse cx="36" cy="55" rx="2.5" ry="1.8" fill="#FFB5C8" opacity="0.75" stroke="none"/>
+          <ellipse cx="64" cy="55" rx="2.5" ry="1.8" fill="#FFB5C8" opacity="0.75" stroke="none"/>
+          <path d="M50 22 L50 14 M50 22 L44 18 M50 22 L56 18 M50 22 L44 26 M50 22 L56 26" stroke="#FFD060" stroke-width="2"/>
+          <path d="M18 30 l1.2 2.5 l2.5 1.2 l-2.5 1.2 l-1.2 2.5 l-1.2 -2.5 l-2.5 -1.2 l2.5 -1.2 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+          <path d="M82 34 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+          <path d="M20 76 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+        </svg>
+        <div class="label">Daily Compliment</div>
+        <div class="sub">one for today 🌟</div>
+      </div>
+
+      <!-- Moment -->
+      <div class="zone-card card-moment" onclick="openMomentVideo()">
+        <svg class="zone-svg" viewBox="0 0 100 100" fill="none" stroke="#5FA882" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="22" y="42" width="56" height="36" rx="6" fill="#D0F0E0"/>
+          <path d="M22 42 L34 30 L78 30 L78 42 Z" fill="#B5E8C8"/>
+          <path d="M34 30 L40 22 L50 22 L44 30 Z" fill="#B5E8C8"/>
+          <path d="M50 30 L56 22 L66 22 L60 30 Z" fill="#B5E8C8"/>
+          <path d="M66 30 L72 22 L78 22 L78 30 Z" fill="#B5E8C8"/>
+          <circle cx="50" cy="60" r="10" fill="#FFF" stroke="#5FA882"/>
+          <path d="M47 56 L56 60 L47 64 Z" fill="#5FA882"/>
+          <path d="M14 40 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+          <path d="M88 50 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+        </svg>
+        <div class="label">A Moment for You</div>
+        <div class="sub">tap to open 🎬</div>
+      </div>
+
+      <!-- Notes -->
+      <div class="zone-card card-notes" onclick="showScreen('notes')">
+        <svg class="zone-svg" viewBox="0 0 100 100" fill="none" stroke="#C89A5A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 36 L84 36 L84 78 L16 78 Z" fill="#FFF5E0"/>
+          <path d="M22 44 L78 44 L78 72 L22 72 Z" fill="#FFF"/>
+          <path d="M30 52 L70 52" stroke="#C89A5A" stroke-width="1.5" opacity="0.5"/>
+          <path d="M30 58 L70 58" stroke="#C89A5A" stroke-width="1.5" opacity="0.5"/>
+          <path d="M30 64 L58 64" stroke="#C89A5A" stroke-width="1.5" opacity="0.5"/>
+          <path d="M16 36 L50 58 L84 36" fill="#FFCC99"/>
+          <path d="M50 62 C 46 58, 42 58, 42 62 C 42 66, 50 72, 50 72 C 50 72, 58 66, 58 62 C 58 58, 54 58, 50 62 Z" fill="#FFB5C8" stroke="#C77A9A" stroke-width="1.5"/>
+        </svg>
+        <div class="label">Notes from Sivaram</div>
+        <div class="sub">one a day 💌</div>
+      </div>
+
+      <!-- Surprises -->
+      <div class="zone-card card-surp" onclick="showScreen('surprises')">
+        <svg class="zone-svg" viewBox="0 0 100 100" fill="none" stroke="#8A6AC8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="22" y="42" width="56" height="38" rx="6" fill="#E0D0FF"/>
+          <rect x="16" y="34" width="68" height="14" rx="4" fill="#C8A8FF"/>
+          <path d="M50 34 L50 80" stroke="#8A6AC8"/>
+          <path d="M50 34 Q40 20 32 26 Q26 34 50 34 Z" fill="#FFD6E8" stroke="#C77A9A"/>
+          <path d="M50 34 Q60 20 68 26 Q74 34 50 34 Z" fill="#FFD6E8" stroke="#C77A9A"/>
+          <path d="M14 60 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+          <path d="M86 66 l1 2 l2 1 l-2 1 l-1 2 l-1 -2 l-2 -1 l2 -1 z" fill="#FFE0A0" stroke="#C89A5A" stroke-width="1"/>
+        </svg>
+        <div class="label">Little Surprises</div>
+        <div class="sub">something's inside 🎁</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIRTHDAY -->
+  <div class="screen" id="screen-birthday">
+    <button class="back-btn" onclick="showScreen('home')">← back</button>
+    <div class="scroll-content mt24" style="padding-top:10px">
+      <div class="progress-dots" id="bday-dots">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div id="bday-screens">
+        <div class="bday-screen active" id="bs-0">
+          <div class="content-card center">
+            <span class="emoji-big">👀</span>
+            <p class="big-text">"Hey you 👀</p>
+            <p class="big-text mt8">So. It's your birthday.</p>
+            <p class="big-text mt8">I made you something."</p>
+          </div>
+          <button class="btn btn-primary" onclick="bdayNext(1)">keep going →</button>
+        </div>
+        <div class="bday-screen" id="bs-1">
+          <div class="content-card">
+            <p class="soft-text">"A few months ago I was going through something really hard. A breakup. And somehow I ended up in your DMs.</p>
+            <div class="divider"></div>
+            <p class="soft-text">I came to you kind of broken. And you just… listened. Didn't judge. Didn't rush me. Just stayed.</p>
+            <div class="divider"></div>
+            <p class="soft-text">I talked about Pravena way too much 😂 and you never once made me feel like I was too much.</p>
+            <div class="divider"></div>
+            <p class="soft-text">Somewhere in all of that — I stopped coming to you because I needed to talk. And started looking forward to talking to you just because it's you."</p>
+          </div>
+          <button class="btn btn-primary" onclick="bdayNext(2)">and then →</button>
+        </div>
+        <div class="bday-screen" id="bs-2">
+          <div class="content-card">
+            <p class="big-text mb8">What I appreciate about you 🌸</p>
+            <div class="divider"></div>
+            <p class="soft-text">✨ You have exactly my energy. Same chaos, same way of thinking — talking to you never feels like effort.</p>
+            <div class="divider"></div>
+            <p class="soft-text">💙 You healed something in me I didn't know how to fix. Without even trying.</p>
+            <div class="divider"></div>
+            <p class="soft-text">🫶 You're someone I genuinely want in my life. Not because of a hard time. Just because of you.</p>
+          </div>
+          <button class="btn btn-primary" onclick="bdayNext(3)">one more thing →</button>
+        </div>
+        <div class="bday-screen" id="bs-3">
+          <div class="content-card">
+            <p class="soft-text">"Oh and — I know you've had guys catch feelings after getting close 😂</p>
+            <div class="divider"></div>
+            <p class="soft-text">You don't have to worry about that with me.</p>
+            <div class="divider"></div>
+            <p class="soft-text">I value what we have exactly as it is. No agenda. No weirdness. Just us being the chaotic same-personality duo 😂🫶</p>
+            <div class="divider"></div>
+            <p class="soft-text">You can always just be yourself around me."</p>
+          </div>
+          <button class="btn btn-primary" onclick="bdayNext(4)">🎊 Let's celebrate! →</button>
+        </div>
+        <div class="bday-screen" id="bs-4">
+          <div class="content-card center">
+            <span class="emoji-big">🎂</span>
+            <p class="big-text">Happy Birthday Ritika 🎂</p>
+            <div class="divider"></div>
+            <p class="soft-text">Have the kind of year that matches how good a person you are.</p>
+            <p class="soft-text mt8">Stay exactly the way you are.</p>
+            <p class="soft-text mt8">— Sivaram 🫶🎀</p>
+          </div>
+          <button class="btn btn-soft" id="bday-read-again" style="display:none" onclick="bdayNext(0)">read again 📖</button>
+          <button class="btn btn-primary" id="bday-bonus-btn" style="display:none" onclick="bdayNext(5)">there's one more thing 🌸</button>
+          <button class="btn btn-soft" onclick="showScreen('home')">← back home 🌸</button>
+        </div>
+        <div class="bday-screen" id="bs-5">
+          <div class="content-card">
+            <p class="soft-text">"okay wait. one more thing.</p>
+            <div class="divider"></div>
+            <p class="soft-text">I didn't expect to find a friendship this good when I reached out.</p>
+            <div class="divider"></div>
+            <p class="soft-text">I came looking for something I'd lost.</p>
+            <div class="divider"></div>
+            <p class="soft-text">I didn't expect to find you.</p>
+            <div class="divider"></div>
+            <p class="soft-text">But here we are. And I wouldn't trade it.</p>
+            <div class="divider"></div>
+            <p class="soft-text">Not for anything. 🌸"</p>
+          </div>
+          <button class="btn btn-soft" onclick="showScreen('home')">← back home 🌸</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOOD -->
+  <div class="screen" id="screen-mood">
+    <button class="back-btn" onclick="showScreen('home')">← back</button>
+    <div class="scroll-content" style="padding-top:10px">
+      <div class="content-card center mt24">
+        <p class="section-title">How are you feeling? 💙</p>
+        <p class="soft-text">No filter needed. Just pick.</p>
+        <div class="mood-flower mt12">
+          <div class="mood-row">
+            <div class="mood-petal" id="petal-happy" onclick="pickMood('happy')"><div class="m-icon">😊</div><div class="m-label">Happy</div></div>
+            <div class="mood-petal" id="petal-low" onclick="pickMood('low')"><div class="m-icon">😔</div><div class="m-label">Low</div></div>
+          </div>
+          <div class="mood-row">
+            <div class="mood-petal" id="petal-frustrated" onclick="pickMood('frustrated')"><div class="m-icon">😤</div><div class="m-label">Frustrated</div></div>
+            <div class="mood-petal" id="petal-tired" onclick="pickMood('tired')"><div class="m-icon">😴</div><div class="m-label">Tired</div></div>
+          </div>
+          <div class="mood-row">
+            <div class="mood-petal" id="petal-numb" onclick="pickMood('numb')"><div class="m-icon">😶</div><div class="m-label">Just Numb</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="content-card center" id="mood-response-card">
+        <p class="mood-line" id="mood-line-text"></p>
+        <div id="rant-section" style="display:none; margin-top:16px; text-align:left">
+          <textarea class="rant-textarea" id="rant-text" placeholder="Go ahead. Say it. All of it." rows="5"></textarea>
+          <button class="btn btn-primary mt12" onclick="releaseRant()">Release it 🌬️</button>
+          <p id="rant-after" style="display:none; text-align:center; margin-top:12px; font-size:15px; font-weight:700; color:var(--text-soft);"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLIMENT -->
+  <div class="screen" id="screen-compliment">
+    <button class="back-btn" onclick="showScreen('home')">← back</button>
+    <div class="scroll-content" style="padding-top:10px">
+      <div class="content-card compliment-card mt24">
+        <p class="compliment-text" id="compliment-text"></p>
+        <p class="compliment-date" id="compliment-date"></p>
+        <div class="divider"></div>
+        <p class="compliment-footer">come back tomorrow for a new one 🌸</p>
+        <p class="compliment-sign">— written by Sivaram, just for you</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="screen" id="screen-notes">
+    <button class="back-btn" onclick="showScreen('home')">← back</button>
+    <div class="scroll-content" style="padding-top:10px">
+      <div id="note-today-card" class="content-card note-card mt24">
+        <div class="note-seal">🌸</div>
+        <p class="note-text" id="note-text"></p>
+        <p class="note-sign" id="note-sign">from Sivaram</p>
+      </div>
+      <div class="content-card">
+        <p class="note-counter" id="note-counter"></p>
+      </div>
+      <div id="notes-all-section" style="display:none">
+        <div class="content-card">
+          <p class="section-title" style="font-size:18px;">all notes unlocked 🌸</p>
+          <p class="soft-text mt8" style="font-size:13px;">you can re-read any of them anytime.</p>
+        </div>
+        <div class="all-notes-list" id="all-notes-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SURPRISES -->
+  <div class="screen" id="screen-surprises">
+    <button class="back-btn" onclick="showScreen('home')">← back</button>
+    <div class="scroll-content" style="padding-top:10px">
+      <div class="content-card mt24">
+        <p class="section-title center">Little Surprises 🎁</p>
+        <p class="soft-text center mt8">tap the gift. something's inside.</p>
+        <div class="gift-wrap">
+          <div class="gift-box" id="gift-box" onclick="openGift()">🎁</div>
+        </div>
+      </div>
+      <div class="content-card surprise-card" id="surprise-card" style="display:none">
+        <p class="surprise-text" id="surprise-text"></p>
+        <p class="surprise-hint">tap the gift for another 🎁</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENVELOPE -->
+  <div class="screen" id="screen-envelope">
+    <button class="back-btn" onclick="showScreen('home')">← back</button>
+    <div class="scroll-content" style="padding-top:10px">
+      <div class="content-card mt24">
+        <p class="env-header-title">✉️ The Envelope</p>
+        <p class="env-header-sub mt8">whatever's on your mind — no filter needed.</p>
+        <p class="env-header-sub mt8">cry here. rant here. share your happy moments. whatever it is — just type.</p>
+      </div>
+      <div class="content-card">
+        <textarea class="envelope-textarea" id="envelope-text" placeholder="start typing... this is your safe space 🌸" rows="7"></textarea>
+        <div id="sent-feedback">Sent 💙</div>
+        <div id="envelope-buttons">
+          <button class="btn btn-soft" onclick="letItGo()" style="margin-top:8px">Just let it go 🌬️</button>
+          <button class="btn btn-primary" onclick="sendEnvelope()" style="margin-top:8px">Send it 💙</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════
+const TG_TOKEN = '8515323779:AAFAUMj0v46jShFnc_u_5ObyvEf0Lplje48';
+const TG_CHAT_ID = '1924520310';
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let currentMood = null;
+let blossomTapCount = 0;
+let easterEggShown = false;
+let introClosed = false;
+let videoTimers = [];
+let surpriseOrder = [];
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  createBlossoms();
+  createIntroBlossoms();
+  createRaindrops();
+  setGreeting();
+  checkBirthday();
+  checkLateNight();
+  incrementOpenCount();
+  setInterval(setGreeting, 60000);
+  runIntroSequence();
+  initCompliment();
+  initNotes();
+});
+
+// ═══════════════════════════════════════════════════════════
+// INTRO
+// ═══════════════════════════════════════════════════════════
+function runIntroSequence() {
+  const orb = document.getElementById('intro-orb');
+  const titleEl = document.getElementById('intro-title');
+  const sub = document.getElementById('intro-sub');
+  const btnWrap = document.getElementById('intro-btn-wrap');
+
+  const titleText = "Made for you 🎀";
+  titleEl.innerHTML = '';
+  for (const ch of titleText) {
+    const span = document.createElement('span');
+    span.className = 'intro-letter';
+    span.textContent = ch === ' ' ? '\u00A0' : ch;
+    titleEl.appendChild(span);
+  }
+  const letters = titleEl.querySelectorAll('.intro-letter');
+  setTimeout(() => orb.classList.add('show'), 50);
+  letters.forEach((l, i) => { l.style.animationDelay = (0.5 + i * 0.08) + 's'; });
+  const lettersDone = 0.5 + letters.length * 0.08 + 0.35;
+  setTimeout(() => sub.classList.add('show'), lettersDone * 1000 + 600);
+  setTimeout(() => btnWrap.classList.add('show'), lettersDone * 1000 + 1100);
+}
+
+function closeIntro() {
+  if (introClosed) return;
+  introClosed = true;
+  const intro = document.getElementById('intro');
+  intro.classList.add('fading');
+  setTimeout(() => {
+    intro.style.display = 'none';
+    const home = document.getElementById('screen-home');
+    home.style.animation = 'none'; void home.offsetWidth;
+    home.style.animation = 'fadeSlideIn 0.45s ease';
+    setTimeout(() => document.getElementById('greet-cursor').classList.add('show'), 800);
+    checkMoodMemory();
+    checkMilestone();
+  }, 620);
+}
+
+function createIntroBlossoms() {
+  const container = document.getElementById('intro-blossoms');
+  const emojis = ['🌸','🌸','🌸','🌷','✿'];
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement('div');
+    b.className = 'blossom';
+    b.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    b.style.left = Math.random() * 100 + '%';
+    b.style.animationDuration = (7 + Math.random() * 8) + 's';
+    b.style.animationDelay = (-Math.random() * 10) + 's';
+    b.style.fontSize = (12 + Math.random() * 10) + 'px';
+    b.style.opacity = 0.5 + Math.random() * 0.4;
+    container.appendChild(b);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// GREETING
+// ═══════════════════════════════════════════════════════════
+function setGreeting() {
+  const h = new Date().getHours();
+  let g;
+  if (h >= 5 && h < 11) g = "Good morning 🌸\nhope today is kind to you";
+  else if (h >= 11 && h < 17) g = "Hey you 👀\nhow's your day going";
+  else if (h >= 17 && h < 22) g = "Evening 🌸\nhope today treated you well";
+  else if (h >= 22 || h === 0) g = "Still up? 🌙\nhope you're okay";
+  else g = "2am again huh 🌙\nI hope you're alright";
+  const el = document.getElementById('greeting-text');
+  if (el) el.innerHTML = g.replace(/\n/g, '<br>');
+}
+
+// ═══════════════════════════════════════════════════════════
+// BIRTHDAY / LATE NIGHT
+// ═══════════════════════════════════════════════════════════
+function checkBirthday() {
+  const now = new Date();
+  if (now.getMonth() === 8 && now.getDate() === 18) {
+    document.getElementById('bday-card').classList.add('bday-glow');
+  }
+}
+function checkLateNight() {
+  const h = new Date().getHours();
+  if (h >= 1 && h < 5) document.getElementById('late-night-whisper').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const scr = document.getElementById('screen-' + id);
+  if (scr) scr.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'envelope') {
+    document.getElementById('envelope-text').value = '';
+    document.getElementById('sent-feedback').style.display = 'none';
+    document.getElementById('envelope-buttons').style.display = 'block';
+  }
+  if (id === 'notes') renderNoteToday();
+  const rainMoods = ['low','tired','numb'];
+  if (id === 'mood' && currentMood && rainMoods.includes(currentMood)) showRain();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BLOSSOMS
+// ═══════════════════════════════════════════════════════════
+function createBlossoms() {
+  const container = document.getElementById('blossoms');
+  const emojis = ['🌸','🌸','🌸','🌷','✿'];
+  for (let i = 0; i < 14; i++) {
+    const b = document.createElement('div');
+    b.className = 'blossom';
+    b.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    b.style.left = Math.random() * 100 + '%';
+    b.style.animationDuration = (8 + Math.random() * 10) + 's';
+    b.style.animationDelay = (-Math.random() * 12) + 's';
+    b.style.fontSize = (10 + Math.random() * 8) + 'px';
+    b.style.opacity = 0.4 + Math.random() * 0.4;
+    b.addEventListener('click', handleBlossomTap);
+    container.appendChild(b);
+  }
+}
+function handleBlossomTap() {
+  if (easterEggShown) return;
+  blossomTapCount++;
+  if (blossomTapCount >= 5) {
+    easterEggShown = true;
+    const egg = document.getElementById('easter-egg-toast');
+    egg.style.display = 'block';
+    setTimeout(() => { egg.style.display = 'none'; }, 5000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// RAIN
+// ═══════════════════════════════════════════════════════════
+function createRaindrops() {
+  const container = document.getElementById('rain-container');
+  for (let i = 0; i < 40; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'raindrop';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.height = (20 + Math.random() * 30) + 'px';
+    drop.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    drop.style.animationDelay = (-Math.random() * 3) + 's';
+    drop.style.opacity = 0.3 + Math.random() * 0.4;
+    container.appendChild(drop);
+  }
+}
+function showRain(intensity) {
+  const c = document.getElementById('rain-container');
+  c.classList.add('active');
+  if (intensity === 'numb') c.style.opacity = '0.35';
+  else if (intensity === 'tired') c.style.opacity = '0.55';
+  else c.style.opacity = '1';
+}
+function hideRain() { document.getElementById('rain-container').classList.remove('active'); }
+
+// ═══════════════════════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════════════════════
+function fireConfetti(duration) {
+  const colors = ['#FFB5C8','#C9B8FF','#FFD6B0','#B5E8C8','#FFE0A0','#A0D4FF'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.top = '-10px';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      el.style.width = (6 + Math.random() * 8) + 'px';
+      el.style.height = (6 + Math.random() * 8) + 'px';
+      el.style.animationDuration = (2 + Math.random() * 2) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, Math.random() * (duration || 500));
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// BIRTHDAY FLOW
+// ═══════════════════════════════════════════════════════════
+function bdayNext(n) {
+  document.querySelectorAll('.bday-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('bs-' + n).classList.add('active');
+  document.querySelectorAll('#bday-dots .dot').forEach((d, i) => d.classList.toggle('active', i === n));
+  window.scrollTo(0, 0);
+  if (n === 4) {
+    fireConfetti(800); spawnBalloons();
+    try { localStorage.setItem('ritika_bday_read', 'true'); } catch(e) {}
+    document.getElementById('bday-read-again').style.display = 'block';
+    document.getElementById('bday-bonus-btn').style.display = 'block';
+  }
+}
+function spawnBalloons() {
+  const cont = document.getElementById('balloons-container');
+  cont.innerHTML = '';
+  const emojis = ['🎈','🎀','🎊','💜','🩷'];
+  for (let i = 0; i < 5; i++) {
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    b.textContent = emojis[i % emojis.length];
+    b.style.left = (10 + i * 18) + '%';
+    b.style.bottom = (20 + Math.random() * 20) + 'px';
+    b.style.animationDelay = (i * 0.4) + 's';
+    cont.appendChild(b);
+  }
+  setTimeout(() => { cont.innerHTML = ''; }, 8000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOOD
+// ═══════════════════════════════════════════════════════════
+const moodLines = {
+  happy: ["Yesss hold onto this feeling 🌸","This is your energy. Own it 🌟","Happy looks good on you 😊","Save this moment. You deserve it.","The world is better when you're like this 🌸","Good. Stay here as long as you can 💛","You being happy is genuinely a win 🎉","Whatever made you smile today — hold it close 🌼","This version of you? Iconic 😂🌸","Go ride this wave. You've earned it 🌊"],
+  low: ["You don't have to hold it together right now 💙","Some days are just heavy. That's okay.","You're allowed to just… not be okay today.","This feeling isn't permanent. But you don't have to rush past it.","It's okay to just sit with it for a bit 💙","You've gotten through hard days before. You'll get through this one too.","Being low doesn't make you weak. It makes you human.","Rest if you need to. The world can wait.","You don't owe anyone your okay-ness today.","Whatever you're carrying right now — you don't have to carry it alone 💙"],
+  frustrated: ["Okay rant. Let it out. 😤"],
+  tired: ["Rest. You've been doing a lot.","You don't have to be productive right now.","Tired means you showed up. A lot. Rest now.","Put it down. Whatever it is. Just for now.","You're allowed to just… stop for a bit.","The world won't fall apart if you rest 💙","Being drained isn't weakness. It's your body asking for kindness.","Close your eyes. Even for five minutes. You deserve that.","You've carried enough today. Set it down.","Rest isn't giving up. It's how you keep going 🌿"],
+  numb: ["Sometimes there are no words. That's okay too.","You don't have to feel something right now.","Numb is okay. Just be here.","No pressure to feel anything. Just exist for a bit.","It's okay to just float for a while 💙","You don't have to explain this feeling. It's valid as it is.","Even numb days pass. You're still here.","Nothing to fix. Just sit with it 💙","Some days are grey. You're still you in them.","This isn't forever. But you don't have to rush it."]
+};
+const rantAfterLines = ["Gone. You're lighter now 🫧","Left the chat. Bye 🫧","Released into the void. It deserved it 😤","Poof. It doesn't get to live in your head anymore.","That's done. You're done with it 🌬️","Floated away. Good riddance 🫧","You said it. Now let it go 🌬️","It's gone. You're still here. That matters 💙","Your feelings were valid. Now they're free 🕊️","Lighter. That's the only direction from here 🫧"];
+const moodPalettes = { happy:'mood-happy', low:'mood-low', frustrated:'mood-frustrated', tired:'mood-tired', numb:'mood-numb' };
+
+function pickMood(mood) {
+  currentMood = mood;
+  try {
+    localStorage.setItem('ritika_last_mood', mood);
+    localStorage.setItem('ritika_last_mood_time', Date.now());
+  } catch(e) {}
+  document.querySelectorAll('.mood-petal').forEach(p => p.classList.remove('selected'));
+  document.getElementById('petal-' + mood).classList.add('selected');
+  document.body.className = '';
+  document.body.classList.add(moodPalettes[mood]);
+  if (['low','tired','numb'].includes(mood)) showRain(mood); else hideRain();
+  if (mood === 'happy') fireConfetti(400);
+
+  const card = document.getElementById('mood-response-card');
+  card.style.display = 'block';
+  const rantSection = document.getElementById('rant-section');
+  const rantAfter = document.getElementById('rant-after');
+  rantSection.style.display = 'none';
+  rantAfter.style.display = 'none';
+  document.getElementById('rant-text').value = '';
+  document.getElementById('rant-text').style.display = 'block';
+  document.querySelector('#rant-section .btn').style.display = 'block';
+
+  if (mood === 'frustrated') {
+    document.getElementById('mood-line-text').textContent = "Okay rant. Let it out.";
+    rantSection.style.display = 'block';
+  } else {
+    const pool = moodLines[mood];
+    const line = pool[Math.floor(Math.random() * pool.length)];
+    document.getElementById('mood-line-text').textContent = line;
+  }
+  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 200);
+}
+
+function releaseRant() {
+  const text = document.getElementById('rant-text').value;
+  if (!text.trim()) return;
+  floatWordsAway(text, document.getElementById('rant-text'));
+  document.getElementById('rant-text').value = '';
+  document.getElementById('rant-text').style.display = 'none';
+  document.querySelector('#rant-section .btn').style.display = 'none';
+  const after = document.getElementById('rant-after');
+  after.textContent = rantAfterLines[Math.floor(Math.random() * rantAfterLines.length)];
+  after.style.display = 'block';
+}
+
+function floatWordsAway(text, fromEl) {
+  const words = text.trim().split(/\s+/).slice(0, 12);
+  const rect = fromEl.getBoundingClientRect();
+  words.forEach((word, i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'float-word';
+      el.textContent = word;
+      el.style.left = (rect.left + Math.random() * rect.width) + 'px';
+      el.style.top = (rect.top + Math.random() * rect.height * 0.5) + 'px';
+      el.style.animationDuration = (1.5 + Math.random()) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2500);
+    }, i * 80);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAILY COMPLIMENT — 90 total
+// ═══════════════════════════════════════════════════════════
+const compliments = [
+  "You handle more than people realise. And you do it quietly. That's strength 🌸",
+  "The chaos in you is actually the best part 😂🌸",
+  "You're not too much. You're exactly enough 💙",
+  "Today's compliment brought to you by someone who's glad you exist 🫶 — that's it. that's the whole message.",
+  "If you could see yourself the way the people who love you see you — you'd be amazed 🌸",
+  "The world is a little warmer because you're in it ☀️",
+  "You deserve the same kindness you give everyone else. Seriously 💛",
+  "You've gotten through 100% of your hard days. That's your track record 💪",
+  "You make spaces better just by being in them. That's rare.",
+  "You're allowed to take up space. All of it. Don't shrink 💙",
+  "Whoever gets your full energy is genuinely lucky. I hope you know that 🫶",
+  "You're doing better than you think. I promise 🌸",
+  "You don't have to earn rest. You don't have to earn kindness. You just deserve it 💙",
+  "The right people in your life see exactly how good you are. Don't forget that 🌸",
+  "Today, just be. You don't have to do anything to deserve good things 🌿",
+  "You have this energy that just pulls people in. You probably don't even notice it 🌸",
+  "Whatever today looks like — you showed up. That counts. That always counts 💙",
+  "You're allowed to have a bad day and still be someone who's doing great overall 🌸",
+  "There's something very quietly powerful about you. Don't let anyone dim it ✨",
+  "Reminder: you are loved. Not for what you do. Just for being you 🎀",
+  "The version of you right now — today — is enough. More than enough 🌸",
+  "You think about people in ways most people never think about anyone. That's beautiful 💙",
+  "You're not behind. You're not too slow. You're exactly where you need to be 🌿",
+  "You carry people without realising it. That's a gift. But don't forget to let someone carry you too 💙",
+  "You have exactly the right amount of chaos. Don't let anyone tell you otherwise 😂🌸",
+  "The way you show up for people — not everyone does that. You do. That matters 💙",
+  "You're funnier than you think. And smarter. And more magnetic. Just so you know.",
+  "Whatever you're carrying today — you don't have to carry it perfectly 🌿",
+  "The fact that you care so deeply is not a weakness. It's genuinely your superpower ✨",
+  "Something about you just makes people feel at ease. That's a gift 🌸",
+  "Your energy is the kind people remember long after the conversation ends 🌸",
+  "You're someone I'd choose as a friend in any version of my life 🫶",
+  "The way you listen — actually listen — is rarer than you think 💙",
+  "You're kind in a way that doesn't ask for anything back. That's a whole personality trait.",
+  "You make people feel seen without even trying. That's not small.",
+  "There's a softness in you that's also somehow a strength 🌸",
+  "You don't need to be louder to matter. You already do.",
+  "Your laugh could fix a bad day. Honestly.",
+  "You're allowed to want good things for yourself. You deserve them anyway 💛",
+  "Whatever you're building, or healing, or figuring out — you're doing it right 🌿",
+  "You're not 'too sensitive.' You're tuned in. That's different.",
+  "You'd make a stranger feel at home. That's a superpower.",
+  "You have this quiet way of making things feel less heavy for people around you 💙",
+  "The way you think — curious, careful, warm — is genuinely beautiful 🌸",
+  "You don't have to have it all figured out. Nobody does. You're doing fine.",
+  "You're the kind of person people write songs about, honestly.",
+  "You notice small things about people. That's rare. That's love, actually 🌸",
+  "You laugh with your whole self. That's the best way to laugh.",
+  "You make the world gentler just by moving through it 🌸",
+  "You're worth taking care of. Same way you take care of everyone else.",
+  "Whatever you think you should have done by now — throw that list out. You're enough as you are 💙",
+  "You're not hard to love. You're just particular about who deserves you.",
+  "You give people space to be themselves. That's a gift not everyone has 🌸",
+  "You're growing in ways you can't see yet. It's happening.",
+  "You keep your promises. Even the small ones to yourself.",
+  "You're someone people feel safe around. Do you know how rare that is?",
+  "You notice beauty in small things. That's why you're so fun to be around 🌸",
+  "You have a way of making ordinary days feel special.",
+  "You're allowed to be proud of yourself. Out loud. In public.",
+  "You bring out the best version of people just by being around 🌸",
+  "The way you love your people — fiercely, quietly — is beautiful.",
+  "You don't need fixing. You need resting. There's a difference 🌿",
+  "You're doing the best you can with what you have. And that's always enough.",
+  "Your presence alone calms things down. That's rare 💙",
+  "You're someone people trust with the real stuff. That's the highest compliment.",
+  "You make people believe in friendships again, honestly 🌸",
+  "You're smart in a way that doesn't need to show off. That's real intelligence.",
+  "You are not a burden. Not ever. Not once.",
+  "You handle things with so much grace it's honestly unfair 😂🌸",
+  "You're the kind of person who makes time feel slower — in a good way.",
+  "You don't have to prove anything to anyone. You're already enough.",
+  "Your inner world is beautiful. I hope you know that 🌸",
+  "You're the reason some people still believe in kindness.",
+  "You take things seriously when it matters — and lightly when it doesn't. That's wisdom.",
+  "You're allowed to change your mind. About anything. Anytime.",
+  "You deserve people who show up for you the way you show up for them 🌸",
+  "You make people around you feel braver. That's a real effect 💙",
+  "You have the kind of heart that makes people want to be better.",
+  "You're not 'too emotional.' You're tuned in. That's different.",
+  "You're doing better than the version of you from a year ago. That's growth 🌸",
+  "You care about the things that matter. That's not a small thing.",
+  "You don't have to be perfect to be loved. You already are 💙",
+  "You're the friend everyone wishes they had.",
+  "You make the world feel smaller and warmer just by being in it 🌸",
+  "You're proof that some people are just inherently good.",
+  "You deserve to be chosen. Loudly. Every day.",
+  "You're not just surviving — you're becoming 🌸",
+  "You've got something special. Not everyone can name it, but everyone can feel it.",
+  "You're the kind of person other people write their happy memories around 💙",
+  "Keep going. You're so close to something beautiful. — S 🫶"
+];
+
+function getDayOfYear() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  return Math.floor((now - start) / 86400000);
+}
+
+function initCompliment() {
+  const idx = getDayOfYear() % compliments.length;
+  document.getElementById('compliment-text').textContent = compliments[idx];
+  const now = new Date();
+  const opts = { weekday:'long', month:'long', day:'numeric' };
+  document.getElementById('compliment-date').textContent = now.toLocaleDateString('en-US', opts);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NOTES FROM SIVARAM — 20 notes, 1 per day
+// ═══════════════════════════════════════════════════════════
+const notes = [
+  "hey. just wanted to leave this here. you made today a little easier to get through. that's a you thing. 🌸",
+  "I don't think you realise how funny you actually are. like genuinely. 😂",
+  "you're one of those people who makes the people around them better without trying. I hope you know that.",
+  "random thought: I'm glad you exist. that's it. that's the note. 🫶",
+  "you carry a lot quietly. I see it. rest when you need to. 💙",
+  "the chaotic energy you have? never change it. it's genuinely your best feature 😂🌸",
+  "you don't have to be okay all the time. just so you know.",
+  "today's note is just: hi. hope you smiled at least once today. 🌸",
+  "you're someone people are lucky to have around. the good kind of lucky. 🫶",
+  "I genuinely enjoy our conversations. like actually look forward to them. just wanted to say that.",
+  "you handle things most people would break under. quietly. without complaint. that's strength. 💙",
+  "plot twist: you were actually the main character all along. 🌸",
+  "not every day has to be a good day. some days you just survive. that counts too.",
+  "whatever you're going through right now — you're not going through it alone. even when it feels that way. 💙",
+  "reminder that the version of you right now — today, this moment — is enough. 🌸",
+  "you're going to look back on this time and be proud of how you kept going. I know it. 🫶",
+  "today's note: drink water. sleep well. be kind to yourself. (I mean it.) 💙",
+  "there's something very quietly powerful about the way you move through the world. don't let anyone dim it. ✨",
+  "I wrote 19 notes for you. which is a lot. but so is being your friend. worth it though. 😂🌸",
+  "you found them all 🌸 there's more where this came from. — Sivaram 🫶🎀"
+];
+
+function initNotes() {
+  try {
+    const today = new Date().toDateString();
+    const lastDay = localStorage.getItem('ritika_notes_day');
+    let unlocked = parseInt(localStorage.getItem('ritika_notes_unlocked') || '1');
+    if (lastDay !== today) {
+      if (lastDay) unlocked = Math.min(unlocked + 1, notes.length);
+      localStorage.setItem('ritika_notes_day', today);
+      localStorage.setItem('ritika_notes_unlocked', unlocked);
+    }
+  } catch(e) {}
+}
+
+function renderNoteToday() {
+  let unlocked = 1;
+  try { unlocked = parseInt(localStorage.getItem('ritika_notes_unlocked') || '1'); } catch(e) {}
+  const idx = Math.min(unlocked - 1, notes.length - 1);
+  document.getElementById('note-text').textContent = '"' + notes[idx] + '"';
+  document.getElementById('note-counter').textContent = `note ${idx + 1} of ${notes.length} 🌸`;
+
+  if (unlocked >= notes.length) {
+    document.getElementById('notes-all-section').style.display = 'block';
+    const list = document.getElementById('all-notes-list');
+    list.innerHTML = '';
+    notes.forEach((n, i) => {
+      const d = document.createElement('div');
+      d.className = 'saved-note';
+      d.textContent = `#${i + 1} — "${n}"`;
+      list.appendChild(d);
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SURPRISES — 20 items
+// ═══════════════════════════════════════════════════════════
+const surprises = [
+  "Sending you an invisible hug 🫂 …did you feel it? I put a lot of effort into that one.",
+  "Okay this one's a long hug. Not the awkward kind. The actual warm kind 🫂 you deserved that.",
+  "Someone who cares about you just sent you warmth. Anonymously. (it was me. it's always me. 🫶)",
+  "Why did the scarecrow win an award? Because he was outstanding in his field. …okay that was bad. but you smiled a little didn't you 😂",
+  "I was going to tell you a joke about construction. But I'm still working on it 😂",
+  "Plot twist: this 'surprise' was just me saying hi 😂 hi. hope your day is going okay 🌸",
+  "Today I hope something small and unexpected makes you smile. Like really smile. The kind that surprises you 🌸",
+  "Wishing you a day that feels a little lighter than yesterday. Even just a little 💙",
+  "Hope today gives you at least one moment where everything feels okay. You deserve that moment 🌸",
+  "Challenge: say one genuinely nice thing about yourself. Out loud. Right now. I'll wait. (I'm waiting.) (still waiting.) (okay did you do it?) 🌸",
+  "Send me an emoji right now. Any emoji. Just do it. This is your mission 😂",
+  "Stand up. Stretch your arms out. Take one big breath. Okay you're done. That's the whole challenge. Go rest 🌿",
+  "What's one thing that genuinely made you laugh this week? Like actually laugh. Think about it for a sec 😂",
+  "Think of one person who makes your life better just by existing. Got them? Good. Maybe tell them today 🌸",
+  "What's the last thing that made you feel genuinely proud of yourself? Big or small — it counts 💙",
+  "What song is stuck in your head right now? 🎵 Whatever it is — lean into it. Full send.",
+  "Current vibe check: what are you feeling right now in one emoji? No explanation needed. Just feel it.",
+  "If you needed a sign to keep going — this is it 💙 keep going.",
+  "You are not alone in whatever you're going through. I know it feels that way sometimes. But you're not 💙",
+  "Hey. Just checking in. How are you actually doing? Not the 'I'm fine' version. The real one 🌸"
+];
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function openGift() {
+  const box = document.getElementById('gift-box');
+  const card = document.getElementById('surprise-card');
+  const txt = document.getElementById('surprise-text');
+  box.classList.add('wiggle');
+  setTimeout(() => box.classList.remove('wiggle'), 500);
+  fireConfetti(300);
+  if (surpriseOrder.length === 0) surpriseOrder = shuffleArray(surprises);
+  const next = surpriseOrder.pop();
+  setTimeout(() => {
+    txt.textContent = '"' + next + '"';
+    card.style.display = 'block';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 400);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOMENT VIDEO — 2 videos
+// ═══════════════════════════════════════════════════════════
+function openMomentVideo() {
+  let idx = 0;
+  try { idx = parseInt(localStorage.getItem('ritika_video_index') || '0'); } catch(e) {}
+  if (idx > 1) {
+    alert("you've watched them all 🌸 — more coming when I write them");
+    return;
+  }
+  const screen = document.getElementById('video-screen');
+  screen.classList.add('active');
+  playVideo(idx === 0 ? 1 : 2);
+  try { localStorage.setItem('ritika_video_index', Math.min(idx + 1, 2)); } catch(e) {}
+}
+
+function clearVideoTimers() {
+  videoTimers.forEach(t => clearTimeout(t));
+  videoTimers = [];
+}
+
+function showPhase(id, delay) {
+  const t = setTimeout(() => {
+    document.querySelectorAll('.video-phase').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }, delay);
+  videoTimers.push(t);
+}
+
+function playVideo(num) {
+  clearVideoTimers();
+  document.querySelectorAll('.video-phase').forEach(p => p.classList.remove('active'));
+
+  if (num === 1) {
+    // Video 1 — Birthday Cinematic
+    const typedEl = document.getElementById('v1-typed');
+    typedEl.innerHTML = '';
+    const text = "Happy Birthday 🎂";
+    for (const ch of text) {
+      const s = document.createElement('span');
+      s.className = 'vl';
+      s.textContent = ch === ' ' ? '\u00A0' : ch;
+      typedEl.appendChild(s);
+    }
+    const letters = typedEl.querySelectorAll('.vl');
+
+    showPhase('v1-p1', 100);
+    showPhase('v1-p2', 2000);
+    showPhase('v1-p3', 4500);
+    letters.forEach((l, i) => { l.style.animationDelay = (5.0 + i * 0.12) + 's'; });
+    showPhase('v1-p4', 9000);
+    const t = setTimeout(() => { fireConfetti(1200); spawnBalloons(); }, 9300);
+    videoTimers.push(t);
+
+  } else {
+    // Video 2 — Deep Emotional
+    showPhase('v2-p1', 200);
+    showPhase('v2-p2', 3200);
+    showPhase('v2-p3', 7200);
+    showPhase('v2-p4', 14000);
+  }
+}
+
+function closeVideo() {
+  clearVideoTimers();
+  document.getElementById('video-screen').classList.remove('active');
+  document.querySelectorAll('.video-phase').forEach(p => p.classList.remove('active'));
+}
+
+// ═══════════════════════════════════════════════════════════
+// ENVELOPE
+// ═══════════════════════════════════════════════════════════
+async function sendEnvelope() {
+  const text = document.getElementById('envelope-text').value;
+  if (!text.trim()) return;
+  document.getElementById('envelope-buttons').style.display = 'none';
+  document.getElementById('sent-feedback').style.display = 'block';
+  try {
+    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TG_CHAT_ID, text: `💙 new message:\n\n${text}` })
+    });
+  } catch(e) {}
+  document.getElementById('envelope-text').value = '';
+}
+
+function letItGo() {
+  const text = document.getElementById('envelope-text').value;
+  if (!text.trim()) return;
+  floatWordsAway(text, document.getElementById('envelope-text'));
+  // Silent telegram — she never sees
+  try {
+    fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TG_CHAT_ID, text: `🌬️ she let something go:\n\n${text}` })
+    }).catch(() => {});
+  } catch(e) {}
+  document.getElementById('envelope-text').value = '';
+  document.getElementById('envelope-text').placeholder = 'gone. just like that. 🌬️';
+  setTimeout(() => {
+    document.getElementById('envelope-text').placeholder = 'start typing... this is your safe space 🌸';
+  }, 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOOD MEMORY
+// ═══════════════════════════════════════════════════════════
+function checkMoodMemory() {
+  try {
+    const lastMood = localStorage.getItem('ritika_last_mood');
+    const lastTime = parseInt(localStorage.getItem('ritika_last_mood_time') || '0');
+    if (!lastMood) return;
+    const hoursSince = (Date.now() - lastTime) / 3600000;
+    if (hoursSince > 18) return;
+    const messages = {
+      happy: "hope today matches yesterday's energy 🌸",
+      low: "hey. how are you feeling today? 💙",
+      frustrated: "hope whatever that was got smaller overnight 🫧",
+      tired: "did you rest? you deserved to 🌿",
+      numb: "still here. still checking on you 💙"
+    };
+    const msg = messages[lastMood];
+    if (!msg) return;
+    const toast = document.getElementById('mood-memory-toast');
+    toast.textContent = msg;
+    setTimeout(() => {
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 5000);
+    }, 1500);
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════════
+// MILESTONES
+// ═══════════════════════════════════════════════════════════
+function incrementOpenCount() {
+  try {
+    let c = parseInt(localStorage.getItem('ritika_open_count') || '0');
+    c++;
+    localStorage.setItem('ritika_open_count', c);
+  } catch(e) {}
+}
+
+function checkMilestone() {
+  try {
+    const c = parseInt(localStorage.getItem('ritika_open_count') || '0');
+    const toast = document.getElementById('mood-memory-toast');
+    if (c === 7) {
+      fireConfetti(400);
+      toast.textContent = "you've been here 7 times 🌸 still happy you're here 🫶";
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 5000);
+    } else if (c === 30) {
+      fireConfetti(600);
+      toast.textContent = "30 opens 🎀 this place was built for you. glad you keep coming back.";
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 6000);
+    }
+  } catch(e) {}
+}
+</script>
+
+</body>
+</html>
